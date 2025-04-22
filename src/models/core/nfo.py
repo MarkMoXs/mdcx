@@ -200,21 +200,6 @@ def write_nfo(
                 else:
                     print("  <originalplot><![CDATA[" + originalplot + "]]></originalplot>", file=code)
 
-            # 输出发行日期
-            if release:
-                nfo_tagline = config.nfo_tagline.replace("release", release)
-                if nfo_tagline:
-                    print("  <tagline>" + nfo_tagline + "</tagline>", file=code)
-                if "premiered," in nfo_include_new:
-                    print("  <premiered>" + release + "</premiered>", file=code)
-                if "releasedate," in nfo_include_new:
-                    print("  <releasedate>" + release + "</releasedate>", file=code)
-                if "release_," in nfo_include_new:
-                    print("  <release>" + release + "</release>", file=code)
-
-            # 输出番号
-            print("  <num>" + number + "</num>", file=code)
-
             # 输出标题
             if cd_part and "title_cd," in nfo_include_new:
                 nfo_title += " " + cd_part[1:].upper()
@@ -236,54 +221,25 @@ def write_nfo(
                 else:
                     print("  <sorttitle>" + number + "</sorttitle>", file=code)
 
-            # 输出国家和分级
-            try:
-                country = json_data["country"]
-            except:
-                if re.findall(r"\.\d{2}\.\d{2}\.\d{2}", number):
-                    country = "US"
-                else:
-                    country = "JP"
-
-            # 输出家长分级
-            if "mpaa," in nfo_include_new:
-                if country == "JP":
-                    print("  <mpaa>JP-18+</mpaa>", file=code)
-                else:
-                    print("  <mpaa>NC-17</mpaa>", file=code)
-
-            # 输出自定义分级
-            if "customrating," in nfo_include_new:
-                if country == "JP":
-                    print("  <customrating>JP-18+</customrating>", file=code)
-                else:
-                    print("  <customrating>NC-17</customrating>", file=code)
-
-            # 输出国家
-            if "country," in nfo_include_new:
-                print(f"  <countrycode>{country}</countrycode>", file=code)
-
-            # 初始化 actor_list
-            actor_list = []
-            # 输出男女演员
-            if "actor_all," in nfo_include_new:
-                actor = all_actor
-            # 有演员时输出演员
-            if "actor," in nfo_include_new:
-                if not actor:
-                    actor = config.actor_no_name
-                actor_list = actor.split(",")  # 字符串转列表
-                actor_list = [actor.strip() for actor in actor_list if actor.strip()]  # 去除空白
-            if actor_list:
-                for each in actor_list:
-                    print("  <actor>", file=code)
-                    print("    <name>" + each + "</name>", file=code)
-                    print("    <type>Actor</type>", file=code)
-                    print("  </actor>", file=code)
-
             # 输出导演
             if director and "director," in nfo_include_new:
                 print("  <director>" + director + "</director>", file=code)
+
+            # 输出年代
+            if str(year) and "year," in nfo_include_new:
+                print("  <year>" + str(year) + "</year>", file=code)
+
+            # 输出发行日期
+            if release:
+                nfo_tagline = config.nfo_tagline.replace("year", year)
+                if nfo_tagline:
+                    print("  <tagline>" + nfo_tagline + "</tagline>", file=code)
+                if "release_," in nfo_include_new:
+                    print("  <release>" + release + "</release>", file=code)
+                if "releasedate," in nfo_include_new:
+                    print("  <releasedate>" + release + "</releasedate>", file=code)
+                if "premiered," in nfo_include_new:
+                    print("  <premiered>" + release + "</premiered>", file=code)
 
             # 输出公众评分、影评人评分
             try:
@@ -303,34 +259,36 @@ def write_nfo(
             except:
                 pass
 
-            # 输出年代
-            if str(year) and "year," in nfo_include_new:
-                print("  <year>" + str(year) + "</year>", file=code)
+            # 输出国家和分级
+            try:
+                country = json_data["country"]
+            except:
+                if re.findall(r"\.\d{2}\.\d{2}\.\d{2}", number):
+                    country = "US"
+                else:
+                    country = "JP"
+
+            # 输出家长分级
+            if "mpaa," in nfo_include_new:
+                if country == "JP":
+                    print("  <mpaa>R18+</mpaa>", file=code)
+                else:
+                    print("  <mpaa>NC-17</mpaa>", file=code)
+
+            # 输出自定义分级
+            if "customrating," in nfo_include_new:
+                if country == "JP":
+                    print("  <customrating>成人电影</customrating>", file=code)
+                else:
+                    print("  <customrating>成人电影</customrating>", file=code)
+
+            # 输出国家
+            if "country," in nfo_include_new:
+                print(f"  <countrycode>{country}</countrycode>", file=code)
 
             # 输出时长
             if str(runtime) and "runtime," in nfo_include_new:
                 print("  <runtime>" + str(runtime).replace(" ", "") + "</runtime>", file=code)
-
-            # 输出合集(使用演员)
-            if "actor_set," in nfo_include_new and actor and actor != "未知演员" and actor != "未知演員":
-                actor_list = actor.split(",")  # 字符串转列表
-                actor_list = [actor.strip() for actor in actor_list if actor.strip()]  # 去除空白
-                if actor_list:
-                    for each in actor_list:
-                        print("  <set>", file=code)
-                        print("    <name>" + each + "</name>", file=code)
-                        print("  </set>", file=code)
-
-            # 输出合集(使用系列)
-            if "series_set," in nfo_include_new and series:
-                print("  <set>", file=code)
-                print("    <name>" + series + "</name>", file=code)
-                print("  </set>", file=code)
-
-            # 输出系列
-            if series:
-                if "series," in nfo_include_new:
-                    print("  <series>" + series + "</series>", file=code)
 
             # 输出片商/制作商
             if studio:
@@ -346,14 +304,20 @@ def write_nfo(
                 if "label," in nfo_include_new:
                     print("  <label>" + publisher + "</label>", file=code)
 
-            # 输出 tag
-            if tag and "tag," in nfo_include_new:
-                try:
-                    for i in tag:
-                        if i:
-                            print("  <tag>" + i + "</tag>", file=code)
-                except:
-                    signal.show_log_text(traceback.format_exc())
+            # 输出番号
+            print("  <id>" + number + "</id>", file=code)
+            print("  <num>" + number + "</num>", file=code)
+
+            # 输出系列
+            if series:
+                if "series," in nfo_include_new:
+                    print("  <series>" + series + "</series>", file=code)
+
+            # 输出合集(使用系列)
+            if "series_set," in nfo_include_new and series:
+                print("  <set>", file=code)
+                print("    <name>" + series + "</name>", file=code)
+                print("  </set>", file=code)
 
             # 输出 genre
             if tag and "genre," in nfo_include_new:
@@ -363,6 +327,44 @@ def write_nfo(
                             print("  <genre>" + i + "</genre>", file=code)
                 except:
                     signal.show_log_text(traceback.format_exc())
+
+            # 输出 tag
+            if tag and "tag," in nfo_include_new:
+                try:
+                    for i in tag:
+                        if i:
+                            print("  <tag>" + i + "</tag>", file=code)
+                except:
+                    signal.show_log_text(traceback.format_exc())
+
+            # 初始化 actor_list
+            actor_list = []
+            # 输出男女演员
+            if "actor_all," in nfo_include_new:
+                actor = all_actor
+            # 有演员时输出演员
+            if "actor," in nfo_include_new:
+                if not actor:
+                    actor = config.actor_no_name
+                actor_list = actor.split(",")  # 字符串转列表
+                actor_list = [actor.strip() for actor in actor_list if actor.strip()]  # 去除空白
+            if actor_list:
+                for each in actor_list:
+                    print("  <actor>", file=code)
+                    print("    <name>" + each + "</name>", file=code)
+                    print("    <type>Actor</type>", file=code)
+                    print("    <role>" + each + "</role>", file=code)
+                    print("  </actor>", file=code)
+
+            # 输出合集(使用演员)
+            if "actor_set," in nfo_include_new and actor and actor != "未知演员" and actor != "未知演員":
+                actor_list = actor.split(",")  # 字符串转列表
+                actor_list = [actor.strip() for actor in actor_list if actor.strip()]  # 去除空白
+                if actor_list:
+                    for each in actor_list:
+                        print("  <set>", file=code)
+                        print("    <name>" + each + "</name>", file=code)
+                        print("  </set>", file=code)
 
             # 输出封面地址
             if poster and "poster," in nfo_include_new:

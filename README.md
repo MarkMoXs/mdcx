@@ -66,6 +66,8 @@ pip install -r requirements.txt
 set PYTHONPATH=.\src;%PYTHONPATH%
 python main.py
 ```
+"D:\Portable Files\Python39\python.exe" -m venv .mdcx.venv 指定版本，我的安装位置
+.mdcx.venv\Scripts\activate
 
 - powershell
 ```powershell

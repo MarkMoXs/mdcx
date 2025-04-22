@@ -5,6 +5,7 @@ requests==2.24.0
 beautifulsoup4==4.9.3
 Pillow==9.4.0
 PyQt5==5.15.6
+PySide==6.9.0
 PySocks==1.7.1
 urllib3==1.25.11
 zhconv==1.4.3
@@ -15,3 +16,4 @@ ping3==4.0.4
 oshash==0.1.1
 numpy==1.26.4
 curl-cffi==0.6.0b9
+AppKit==0.2.8
