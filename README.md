@@ -31,6 +31,14 @@ Windows 7 上需使用 Python 3.8 构建, 代码及依赖均兼容, 可在本地
 2. 参考 [为存储库创建配置变量](https://docs.github.com/zh/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository), 设置 `BUILD_FOR_WINDOWS_LEGACY` 变量, 值非空即可
 3. 在 Actions 中手动运行 `Build and Release`
 
+### 自行构建
+
+> 一般情况请勿自行构建, 至 [Release](https://github.com/sqzw-x/mdcx/releases) 下载最新版， PowerShell 默认不允许从当前目录直接运行脚本。
+
+安装 `pyinstaller` 后运行 `.\build-action.ps1`(powershell) 或 `build.sh`(shell)
+
+ui转Py 在UI目录里打开命令提示符，输入 `pyuic5 -o MDCx.py MDCx.ui`
+
 #### macOS
 
 低版本 macOS: 需注意 opencv 兼容性问题, 参考 [issue #82](https://github.com/sqzw-x/mdcx/issues/82#issuecomment-1947973961).
@@ -66,7 +74,7 @@ pip install -r requirements.txt
 set PYTHONPATH=.\src;%PYTHONPATH%
 python main.py
 ```
-"D:\Portable Files\Python39\python.exe" -m venv .mdcx.venv 指定版本，我的安装位置
+"D:\Portable\Dev\Python39\python.exe" -m venv .mdcx.venv 指定版本，我的安装位置
 .mdcx.venv\Scripts\activate
 
 - powershell
