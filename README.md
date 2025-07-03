@@ -31,6 +31,24 @@ Windows 7 上需使用 Python 3.8 构建, 代码及依赖均兼容, 可在本地
 2. 参考 [为存储库创建配置变量](https://docs.github.com/zh/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository), 设置 `BUILD_FOR_WINDOWS_LEGACY` 变量, 值非空即可
 3. 在 Actions 中手动运行 `Build and Release`
 
+### 自行构建
+
+> 一般情况请勿自行构建, 至 [Release](https://github.com/sqzw-x/mdcx/releases) 下载最新版， PowerShell 默认不允许从当前目录直接运行脚本。
+
+打开权限
+PS C:\Users\Jahow> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+PS C:\Users\Jahow> get-ExecutionPolicy
+RemoteSigned
+
+关闭权限
+PS C:\Users\Jahow> Set-ExecutionPolicy -Scope CurrentUser Restricted
+PS C:\Users\Jahow> get-ExecutionPolicy
+Restricted
+
+安装 `pip install pyinstaller` 后运行 `.\scripts\build-action.ps1`(powershell) 或 `build.sh`(shell)
+
+ui转Py 在UI目录里打开命令提示符，输入 `pyuic5 -o MDCx.py MDCx.ui`
+
 #### macOS
 
 低版本 macOS: 需注意 opencv 兼容性问题, 参考 [issue #82](https://github.com/sqzw-x/mdcx/issues/82#issuecomment-1947973961).
@@ -67,8 +85,8 @@ ARM64(AArch64) 架构: 可本地构建. 若欲使用 GitHub Actions 构建, 需 
 
 ```batch
 cd /d D:\dev\mdcx
-python -m venv venv
-venv\Scripts\activate
+python -m venv venv 或指定版本，我的安装位置"D:\Portable\Dev\Python39\python.exe" -m venv .mdcx.venv
+venv\Scripts\activate 切换自定义虚拟环境.mdcx.venv\Scripts\activate
 pip install -r requirements.txt
 set PYTHONPATH=.\src;%PYTHONPATH%
 python main.py
